@@ -8,10 +8,10 @@ def migrate_contract_data_forward(apps, schema_editor):
     Migrate existing contract ForeignKey data to the new ManyToManyField.
     """
     Asset = apps.get_model('netbox_inventory', 'Asset')
-    
+
     # Get all assets that have a contract assigned
     assets_with_contracts = Asset.objects.filter(contract_id__isnull=False)
-    
+
     for asset in assets_with_contracts:
         # Add the existing contract to the new many-to-many relationship
         # Use contract_new since that's the temporary field name
@@ -23,7 +23,7 @@ def migrate_contract_data_reverse(apps, schema_editor):
     Reverse migration: take the first contract from ManyToManyField and set it as ForeignKey.
     """
     Asset = apps.get_model('netbox_inventory', 'Asset')
-    
+
     for asset in Asset.objects.all():
         contracts = asset.contract_new.all()
         if contracts.exists():
@@ -35,7 +35,7 @@ def migrate_contract_data_reverse(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('netbox_inventory', '0012_contract_add_contact_field'),
+        ('netbox_inventory', '0012_contract_alter_contact_field'),
     ]
 
     operations = [
@@ -51,26 +51,26 @@ class Migration(migrations.Migration):
                 verbose_name='Contracts',
             ),
         ),
-        
+
         # Step 2: Migrate data from old ForeignKey to new ManyToManyField
         migrations.RunPython(
             migrate_contract_data_forward,
             migrate_contract_data_reverse,
         ),
-        
+
         # Step 3: Remove the old ForeignKey field
         migrations.RemoveField(
             model_name='asset',
             name='contract',
         ),
-        
+
         # Step 4: Rename the new field to the original name
         migrations.RenameField(
             model_name='asset',
             old_name='contract_new',
             new_name='contract',
         ),
-        
+
         # Step 5: Update the related_name to match the original
         migrations.AlterField(
             model_name='asset',
@@ -83,4 +83,4 @@ class Migration(migrations.Migration):
                 verbose_name='Contracts',
             ),
         ),
-    ] 
+    ]

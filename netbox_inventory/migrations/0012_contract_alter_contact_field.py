@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='contract',
             name='contact',
             field=models.ForeignKey(
@@ -24,4 +24,4 @@ class Migration(migrations.Migration):
                 verbose_name='Contact'
             ),
         ),
-    ] 
+    ]
