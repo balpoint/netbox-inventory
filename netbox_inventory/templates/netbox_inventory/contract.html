@@ -72,8 +72,10 @@
             <th scope="row">Days Remaining</th>
             <td>
               <span class="badge {{ object.remaining_time_class }}">
-                <i class="mdi {{ object.remaining_time_icon }}"></i> {{ object.remaining_time_display }}
+                <i class="mdi {{ object.remaining_time_icon }}"></i>
               </span>
+              <br>
+              <small class="text-muted">{{ object.remaining_time_display }}</small>
             </td>
           </tr>
           <tr>
